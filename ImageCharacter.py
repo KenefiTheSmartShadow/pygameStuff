@@ -45,7 +45,7 @@ def main():
   screen = pg.display.set_mode((WIDTH, HEIGHT))
 
   pg.init()
-  imag = ImageCharacter(screen, "smile.png")
+  imag = ImageCharacter(screen, "smile.png", 400, 300)
 
   WHITE = (255, 255, 255)
   

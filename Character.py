@@ -35,13 +35,13 @@ class Character:
 
     # wasd and arrow keys
     if key[pg.K_LEFT] or key[pg.K_a]:
-      self.char_move(move_multi, LRdir=-1, UDdir=0)
+      self.char_move(move_multi, LRdir=-1, UDdir= 0)
     if key[pg.K_RIGHT] or key[pg.K_d]:
-      self.char_move(move_multi, LRdir=1, UDdir=0)
+      self.char_move(move_multi, LRdir= 1, UDdir= 0)
     if key[pg.K_UP] or key[pg.K_w]:
-      self.char_move(move_multi, LRdir=0, UDdir=-1)
+      self.char_move(move_multi, LRdir= 0, UDdir=-1)
     if key[pg.K_DOWN] or key[pg.K_s]:
-      self.char_move(move_multi, LRdir=0, UDdir=1)
+      self.char_move(move_multi, LRdir= 0, UDdir= 1)
 
   def check_valid_pos(self):
     # if the character goes off screen put it back on the edge
