@@ -2,51 +2,54 @@ import pygame as pg
 import sys
 
 class Character:
-  def __init__(self, start_x=0, start_y=0, character_image=""):
-    """Create a new character at (0,0)\n
-    character_image should be a image file to use in place of the character
-    it will be centered vertically and horizontally on the characters current
-    position"""
+  def __init__(self, start_x=0, start_y=0):
+    """Create a new character at (0,0)"""
     self.character_x, self.character_y = start_x, start_y
-    self.char_image = ""
-    if character_image != "":
-      try:
-        self.char_image = pg.image.load(character_image)
-      except FileNotFoundError:
-        print("ERROR: Could not find file" + character_image)
-      except TypeError:
-        print("ERROR: Could not find file" + character_image)
 
   def draw(self, screen):
-    """draw the character on the screen"""
-    self.moveFromKeyPress()
-    if self.char_image == "":
-      pg.draw.circle(screen, pg.Color(0,0,0), (self.character_x, self.character_y), 10)
-    else:
-      try:
-        self.char_image = pg.image.load(self.char_image)
-      except FileNotFoundError:
-        print("ERROR: Could not find file" + self.char_image)
-      except TypeError:
-        print("ERROR: Could not find file" + self.char_image)
+    """draw the character on the screen\n
+    needs a screen variable from pygame"""
+    self.move_from_key_press()
+    # catch if the player is outside of the screen bounds
+    self.check_valid_pos()
+    pg.draw.circle(screen, pg.Color(0,0,0), (self.character_x, self.character_y), 10)
 
-  def char_move(self, LRdir=1, x_multi=.5, UDdir=1, y_multi=.5):
+  def char_move(self, move_multiplier, LRdir=1, UDdir=1):
     """LRdir: left(-1) or right(1, default)\n
     LRdir: up(-1) or down(1, default)"""
-    self.character_x += LRdir * x_multi
-    self.character_y += UDdir * y_multi
+    self.character_x += LRdir * move_multiplier
+    self.character_y += UDdir * move_multiplier
 
-  def moveFromKeyPress(self):
+  def move_from_key_press(self):
     """left, right, up, down & wasd movement keys"""
     key = pg.key.get_pressed()
+
+    # sprint and crouch
+    move_multi = 0.5
+    if key[pg.K_LCTRL] and key[pg.K_LSHIFT]:
+      move_multi = 0.5
+    elif key[pg.K_LCTRL]:
+      move_multi = 0.25
+    elif key[pg.K_LSHIFT]:
+      move_multi = 0.75
+
+    # wasd and arrow keys
     if key[pg.K_LEFT] or key[pg.K_a]:
-      self.char_move(LRdir=-1, UDdir=0)
+      self.char_move(move_multi, LRdir=-1, UDdir=0)
     if key[pg.K_RIGHT] or key[pg.K_d]:
-      self.char_move(LRdir=1, UDdir=0)
+      self.char_move(move_multi, LRdir=1, UDdir=0)
     if key[pg.K_UP] or key[pg.K_w]:
-      self.char_move(LRdir=0, UDdir=-1)
+      self.char_move(move_multi, LRdir=0, UDdir=-1)
     if key[pg.K_DOWN] or key[pg.K_s]:
-      self.char_move(LRdir=0, UDdir=1)
+      self.char_move(move_multi, LRdir=0, UDdir=1)
+
+  def check_valid_pos(self):
+    # if the character goes off screen put it back on the edge
+    surface_size = pg.display.get_window_size()
+    if self.character_x < 0 or self.character_x > surface_size[0]:
+      self.character_x = 0 if self.character_x < surface_size[0] / 2 else surface_size[0]
+    if self.character_y < 0 or self.character_y > surface_size[1]:
+      self.character_y = 0 if self.character_y < surface_size[1] / 2 else surface_size[1]
 
 # end Character
 
