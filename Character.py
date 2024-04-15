@@ -6,7 +6,7 @@ class Character:
     """Create a new character at (0,0)"""
     self.character_x, self.character_y = start_x, start_y
 
-  def draw(self, screen):
+  def draw(self, screen : pg.Surface):
     """draw the character on the screen\n
     needs a screen variable from pygame"""
     self.move_from_key_press()
