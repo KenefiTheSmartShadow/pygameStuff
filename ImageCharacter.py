@@ -35,10 +35,7 @@ class ImageCharacter(Character):
       self.character_x = 0 if self.character_x < surface_size[0] / 2 else surface_size[0] - self.source.get_width()
     if self.character_y < 0 or self.character_y > surface_size[1] - self.source.get_height():
       self.character_y = 0 if self.character_y < surface_size[1] / 2 else surface_size[1] - self.source.get_height()
-
-
 ## end ImageTesting
-
 
 def main():
   WIDTH, HEIGHT = 800, 600
