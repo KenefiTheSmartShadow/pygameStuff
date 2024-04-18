@@ -2,18 +2,21 @@ import pygame as pg
 import sys
 
 class Character:
-  def __init__(self, start_x=0, start_y=0):
+  def __init__(self, start_x=0, start_y=0, radius=10, controlleable=1):
     """Create a new character at (0,0)"""
     self.character_x, self.character_y = start_x, start_y
     self.color = (0,0,0)
+    self.radius = radius
+    self.controlleable = controlleable
 
   def draw(self, screen : pg.Surface):
     """draw the character on the screen\n
     needs a screen variable from pygame"""
-    self.move_from_key_press()
+    if self.controlleable:
+      self.move_from_key_press()
     # catch if the player is outside of the screen bounds
     self.check_valid_pos()
-    pg.draw.circle(screen, pg.Color(self.color), (self.character_x, self.character_y), 10)
+    pg.draw.circle(screen, pg.Color(self.color), (self.character_x, self.character_y), self.radius)
 
   def char_move(self, move_multiplier, LRdir=1, UDdir=1):
     """LRdir: left(-1) or right(1, default)\n
@@ -48,9 +51,9 @@ class Character:
     # if the character goes off screen put it back on the edge
     surface_size = pg.display.get_window_size()
     if self.character_x < 0 or self.character_x > surface_size[0]:
-      self.character_x = 0 if self.character_x < surface_size[0] / 2 else surface_size[0]
+      self.character_x = 10 if self.character_x > surface_size[0] / 2 else surface_size[0] - 10
     if self.character_y < 0 or self.character_y > surface_size[1]:
-      self.character_y = 0 if self.character_y < surface_size[1] / 2 else surface_size[1]
+      self.character_y = 10 if self.character_y > surface_size[1] / 2 else surface_size[1] - 10
 ## end Character
 
 def main():
