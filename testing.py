@@ -29,11 +29,21 @@ def main():
       char.color = GREEN
     else:
       char.color = BLACK
+    if CollisionDetection.check_collision(char, char_3):
+      CollisionDetection.resolve_collision(char, char_3)
+      char.color = GREEN
+    else:
+      char.color = BLACK
+    if CollisionDetection.check_collision(char_3, char_2):
+      CollisionDetection.resolve_collision(char_3, char_2)
+    else:
+      char.color = BLACK
 
     screen.fill(WHITE)
     
     char.draw(screen)
     char_2.draw(screen)
+    char_3.draw(screen)
     pg.display.flip()
 
 main()
