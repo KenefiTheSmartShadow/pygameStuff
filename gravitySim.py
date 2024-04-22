@@ -12,6 +12,7 @@ class Gravity:
     self.velocity = [5, 1]
     self.gravity = [0, 0.1]
     self.color = color
+    self.surface_size = pg.display.get_window_size()
 
   def draw(self, screen: pg.Surface):
     self.char_move()
@@ -34,10 +35,9 @@ class Gravity:
       self.velocity[1] = self.MAX_VELOCITY
 
   def check_valid_pos(self):
-    surface_size = pg.display.get_window_size()
-    if self.character_x < 0 + self.radius or self.character_x > surface_size[0] - self.radius:
+    if self.character_x < 0 + self.radius or self.character_x > self.surface_size[0] - self.radius:
       self.velocity[0] *= -1
-    if self.character_y < 0 + self.radius or self.character_y > surface_size[1] - self.radius:
+    if self.character_y < 0 + self.radius or self.character_y > self.surface_size[1] - self.radius:
       self.velocity[1] *= -1
 
     
