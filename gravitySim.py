@@ -44,10 +44,10 @@ class Gravity:
 
 def main():
   pg.init()
-  char = Gravity(400, 300, 10, 0)
+  screen = pg.display.set_mode((800, 600))
+  clock = pg.time.Clock()
+  char = Gravity(400, 550, 10, 0)
   while True:
-    screen = pg.display.set_mode((800, 600))
-    clock = pg.time.Clock()
 
     WHITE = (255, 255, 255)
 
