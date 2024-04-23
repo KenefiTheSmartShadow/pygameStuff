@@ -72,7 +72,7 @@ class Gravity:
       self.velocity[1] = self.MAX_VELOCITY
 
   def check_valid_pos(self):
-    temp_vel = self.velocity
+    # temp_vel = self.velocity
     if self.character_x < 0 + self.radius or self.character_x > self.surface_size[0] - self.radius:
       self.velocity[0] *= -1
       self.character_x = 0 + self.radius if self.character_x < self.surface_size[0] / 2 else self.surface_size[0] - self.radius
@@ -82,6 +82,7 @@ class Gravity:
       self.character_y = 0 + self.radius if self.character_y < self.surface_size[1] / 2 else self.surface_size[1] - self.radius
       # self.velocity[1] = temp_vel[1] * -1
 
+# O(n^2)
   def check_collision(self, other):
     dx = self.character_x - other.character_x
     dy = self.character_y - other.character_y
@@ -107,21 +108,77 @@ class Gravity:
 
       return True
     return False
-
 # end Gravity
+
+def collision(one, other):
+  dx = one.character_x - other.character_x
+  dy = one.character_y - other.character_y
+  distance = math.sqrt(dx**2 + dy**2) + .000001
+
+  # Check if the distance is less than the sum of the radii
+  if distance < one.radius + other.radius:
+    # Calculate overlap
+    overlap = 0.5 * (distance - one.radius - other.radius)
+
+    # Displace current object
+    one.character_x -= overlap * (one.character_x - other.character_x) / distance
+    one.character_y -= overlap * (one.character_y - other.character_y) / distance
+
+    # Displace other object
+    other.character_x += overlap * (one.character_x - other.character_x) / distance
+    other.character_y += overlap * (one.character_y - other.character_y) / distance
+
+    # Assuming a perfectly elastic collision
+    # Update velocities
+    one.velocity[0], other.velocity[0] = other.velocity[0], one.velocity[0]
+    one.velocity[1], other.velocity[1] = other.velocity[1], one.velocity[1]
+
+def fixed_grid_collision(char_arr : list[Gravity]):
+  surface_size = pg.display.get_window_size()
+  """
+  Create a grid
+  get the balls that are in each grid square
+  calculate for those and surounding squares
+  """
+  grid = [[[] for _ in range(int(surface_size[0]/20))] for _ in range(int(surface_size[1]/20))]
+  i = 0
+  for obj in char_arr:
+    x = int(math.floor((obj.character_x - 1) / 20))
+    y = int(math.floor((obj.character_y - 1) / 20))
+    grid[y][x].append(i)
+    i += 1
+  # print(grid)
+
+  """
+  loop through the grid
+  for each grid cell calculate its and the surounding cells collisions
+  """
+  for grid_x in range(len(grid)):
+    for grid_y in range(len(grid[grid_x])):
+      for i in range(max(0, grid_x-1), min(len(grid), grid_x+2)):
+        for j in range(max(0, grid_y-1), min(len(grid[grid_x]), grid_y+2)):
+          for a in range(len(grid[grid_x][grid_y])):
+            for b in range(len(grid[i][j])):
+              if grid[grid_x][grid_y][a] != grid[i][j][b]:
+                collision(char_arr[grid[grid_x][grid_y][a]], char_arr[grid[i][j][b]])
+
+
 
 def main():
   pg.init()
-  screen = pg.display.set_mode((800, 600))
+  WIDTH, HEIGHT = 1600, 1200
+  screen = pg.display.set_mode((WIDTH, HEIGHT))
   clock = pg.time.Clock()
-
-  num_obj = 200
-  char_arr = []
   surface_size = pg.display.get_window_size()
+
+  # char = Gravity([0,0])
+
+  num_obj = 2500
+  char_arr = []
   for i in range(0, num_obj):
     rand_x, rand_y = random.randint(0, surface_size[0]), random.randint(0, surface_size[1])
-    rand_x_vel, rand_y_vel = random.randint(0, 5), random.randint(0, 5)
-    rand_radius = random.randint(10,200) / 10
+    rand_x_vel, rand_y_vel = random.randint(-5, 5), random.randint(0, 5) # 0, 0
+    rand_radius = 2 # random.randint(10,200) / 10
     new_vel = [rand_x_vel, rand_y_vel]
     char_arr.append(Gravity(new_vel, rand_x, rand_y, rand_radius, debug=0))
     char_arr[i].color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -134,16 +191,17 @@ def main():
       if event.type == pg.QUIT:
         pg.quit()
         sys.exit()
-
+    # char.draw(screen)
+    fixed_grid_collision(char_arr)
     for obj in char_arr:
-      for other in char_arr:
-        if obj == other:
-          continue
-        obj.check_collision(other)
+    #   for other in char_arr:
+    #     if obj == other:
+    #       continue
+    #     obj.check_collision(other)
       obj.draw(screen)
     pg.display.flip()
 
-    # clock.tick(60)
+    clock.tick(60)
 
 if __name__ == "__main__":
   main()
