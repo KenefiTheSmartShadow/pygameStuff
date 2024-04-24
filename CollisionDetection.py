@@ -17,6 +17,9 @@ class CollisionDetection:
     distance = math.sqrt(dx*dx + dy*dy)
     overlap = char_1.radius + char_2.radius - distance
 
+    if distance == 0:
+       distance += .0000001
+
     if overlap > 0:
         # Normal vector
         normal = [dx/distance, dy/distance]
