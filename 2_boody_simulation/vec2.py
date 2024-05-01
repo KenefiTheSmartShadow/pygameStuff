@@ -27,7 +27,7 @@ class vec2:
         return self.y_vector
       
   def __str__(self):
-    return("(" + str(self.x_vector) + ", " + str(self.y_vector) + ")")
+    return "(" + str(self.x_vector) + ", " + str(self.y_vector) + ")"
 
   def dot(self, other) -> float:
     return self.x_vector * other.x_vector + self.y_vector * other.y_vector

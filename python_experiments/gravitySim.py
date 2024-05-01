@@ -204,7 +204,7 @@ def main():
   clock = pg.time.Clock()
   surface_size = pg.display.get_window_size()
 
-  num_obj = 500
+  num_obj = 2000
   char_arr = []
 
   char = Gravity([0,0], radius=5, control=0, debug=0)
